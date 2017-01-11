@@ -205,7 +205,7 @@ TemperGetTemperatureInC(Temper *t, float *tempC)
 	}
 
 	temperature = (buf[1] & 0xFF) + (buf[0] << 8);	
-	temperature += 1152;			// calibration value
+	//temperature += 1152;			// calibration value
 	*tempC = temperature * (125.0 / 32000.0);
 	return 0;
 }
