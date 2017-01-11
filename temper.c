@@ -8,6 +8,8 @@
 
 /*
  * Temper.c by Robert Kavaler (c) 2009 (relavak.com)
+ * Updates by Matija Nalis (c) 2017 (https://github.com/mnalis/TEMPer-DX)
+ *
  * All rights reserved.
  *
  * Temper driver for linux. This program can be compiled either as a library
