@@ -9,19 +9,23 @@ Reference manual thermometars are:
 - when reference (manual) thermometers yield: 21,21,23,19 (avg 21)
 	- perl_t.pl=25.50
 	- temper.py=25.50
-	- temper 1.0 w/o calibration = 25.50, est. error min +6.5C, avg +4.5C, max +2.5C
+	- temper 1.0 w/o calibration = 25.50; est. error min +6.5C, avg +4.5C, max +2.5C
 
 - when reference (manual) thermometers yield: 19,20,22,18 (avg 19.75)
 	- perl_t.pl=23.44
 	- temper.py=23.44
-	- temper 1.0 w/o calibration = 23.44, est. error min +4.44C, avg +3.69C, max +1.44C
+	- temper 1.0 w/o calibration = 23.44; est. error min +4.44C, avg +3.69C, max +1.44C
 	- orig temper 1.0 = 27.94 (always +4.5C = +1152 * 125.0 / 32000.0)
 
 
 - when reference (manual) thermometers yield: 18,18,19,16 (avg 17.75)
 	- perl_t.pl=21.38
 	- temper.py=21.38
-	- temper 1.0 w/o calibration = 21.38 est. error min +5.38C, avg +3.63C, max +2.38C
+	- temper 1.0 w/o calibration = 21.38; est. error min +5.38C, avg +3.63C, max +2.38C
+
+- when reference (manual) thermometers yield: 22,22,24,20 (avg 22)
+	- temper 1.0 w/o calibration = 24.31; est. error min +4.31C, avg +2.31C, max +0.31C
+	- temper 1.0 w/o calibration, USE_ERNST_FORMULA = 23.44; est.error min +3.44C, avg +1.44C, max -0.56C
 
 
 set calibration to -3.75C (calibration value = -960)
