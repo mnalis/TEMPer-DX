@@ -2,6 +2,9 @@
 #include <string.h>
 #include <usb.h>
 #include <errno.h>
+#ifdef DELAY
+#include <unistd.h>
+#endif
 
 /*
  * Temper.c by Robert Kavaler (c) 2009 (relavak.com)
@@ -33,6 +36,10 @@
 
 #define VENDOR_ID  0x1130
 #define PRODUCT_ID 0x660c
+
+#ifndef DEBUG
+#define DEBUG 0
+#endif
 
 struct Temper {
 	struct usb_device *device;
@@ -198,15 +205,27 @@ TemperGetTemperatureInC(Temper *t, float *tempC)
 	for(i = 0; i < 7; i++) {
 		TemperSendCommand(t, 0, 0, 0, 0, 0, 0, 0, 0);
 	}
+#ifdef DELAY
+        usleep(DELAY);
+#endif
 	TemperSendCommand(t, 10, 11, 12, 13, 0, 0, 1, 0);
 	ret = TemperGetData(t, buf, 256);
 	if(ret < 2) {
 		return -1;
 	}
 
-	temperature = (buf[1] & 0xFF) + (buf[0] << 8);	
-	temperature += -960;			// calibration value
+#ifdef ALT_CALC
+	*tempC=buf[0]+((float)buf[1])/256+1;
+#else /* original calculation code */
+	temperature = (buf[1] & 0xFF) + ((signed char)buf[0] << 8);	
+	#ifdef CALIBRATE
+	        temperature += CALIBRATE;			// calibration value
+	#endif
 	*tempC = temperature * (125.0 / 32000.0);
+	#ifdef USE_ERNST_FORMULA
+	        *tempC = *tempC - ((-0.0535 * *tempC) + 2.1717);
+	#endif
+#endif
 	return 0;
 }
 
@@ -236,33 +255,38 @@ main(void)
 	usb_find_busses();
 	usb_find_devices();
 
-	t = TemperCreateFromDeviceNumber(0, USB_TIMEOUT, 1);
+	t = TemperCreateFromDeviceNumber(0, USB_TIMEOUT, DEBUG);
 	if(!t) {
 		perror("TemperCreate");
 		exit(-1);
 	}
 
-/*
-	TemperSendCommand(t, 10, 11, 12, 13, 0, 0, 2, 0);
-	TemperSendCommand(t, 0x43, 0, 0, 0, 0, 0, 0, 0);
-	TemperSendCommand(t, 0, 0, 0, 0, 0, 0, 0, 0);
-	TemperSendCommand(t, 0, 0, 0, 0, 0, 0, 0, 0);
-	TemperSendCommand(t, 0, 0, 0, 0, 0, 0, 0, 0);
-	TemperSendCommand(t, 0, 0, 0, 0, 0, 0, 0, 0);
-	TemperSendCommand(t, 0, 0, 0, 0, 0, 0, 0, 0);
-	TemperSendCommand(t, 0, 0, 0, 0, 0, 0, 0, 0);
-*/
+#ifdef PRECISION_12BIT
+        TemperSendCommand(t, 10, 11, 12, 13, 0, 0, 2, 0);
+        TemperSendCommand(t, 0x54, 0, 0, 0, 0, 0, 0, 0);
+        TemperSendCommand(t, 0x43, 0, 0, 0, 0, 0, 0, 0);
+        for(i = 0; i < 7; i++) {
+                TemperSendCommand(t, 0, 0, 0, 0, 0, 0, 0, 0);
+        }
+        #ifdef DELAY
+        usleep(DELAY);
+        #endif
+        TemperSendCommand(t, 10, 11, 12, 13, 0, 0, 1, 0);
+#endif
 
 	bzero(buf, 256);
 	ret = TemperGetOtherStuff(t, buf, 256);
-	printf("Other Stuff (%d bytes):\n", ret);
-	for(i = 0; i < ret; i++) {
-		printf(" %02x", buf[i] & 0xFF);
-		if(i % 16 == 15) {
-			printf("\n");
-		}
+	if(t->debug) {
+                printf("Other Stuff (%d bytes):\n", ret);
+
+                for(i = 0; i < ret; i++) {
+                        printf(" %02x", buf[i] & 0xFF);
+                        if(i % 16 == 15) {
+                                printf("\n");
+                        }
+                }
+                printf("\n");
 	}
-	printf("\n");
 
 	for(;;) {
 		float tempc;
@@ -271,6 +295,10 @@ main(void)
 			perror("TemperGetTemperatureInC");
 			exit(1);
 		}
+#ifdef SINGLE_RUN_SHOW_C
+                printf("%.2f\n", tempc);
+                return 0;
+#endif
 		printf("temperature %.2fF %.2fC\n", (9.0 / 5.0 * tempc + 32.0),
 		       tempc);
 		sleep(10);
