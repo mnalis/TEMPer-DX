@@ -18,3 +18,10 @@ Reference manual thermometars are:
 	- orig temper 1.0 = 27.94 (always +4.5C = +1152 * 125.0 / 32000.0)
 
 
+- when reference (manual) thermometers yield: 18,18,19,16 (avg 17.75)
+	- perl_t.pl=21.38
+	- temper.py=21.38
+	- temper 1.0 w/o calibration = 21.38 est. error min +5.38C, avg +3.63C, max +2.38C
+
+
+set calibration to -3.75C (calibration value = -960)
