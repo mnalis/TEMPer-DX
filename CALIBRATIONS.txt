@@ -1,0 +1,20 @@
+Reference manual thermometars are:
+
+1st - digital weather station
+2nd - Analog needle Thermometer and Hygrometer (0C to +40C) - http://tinyurl.com/o8ynnnw
+3rd - Analog needle Thermometer and Hygrometer (TH08) (-30C to +50C)
+4th - Analog mercury thermometer (-30C to +50C)
+
+
+- when reference (manual) thermometers yield: 21,21,23,19 (avg 21)
+	- perl_t.pl=25.50
+	- temper.py=25.50
+	- temper 1.0 w/o calibration = 25.50, est. error min +6.5C, avg +4.5C, max +2.5C
+
+- when reference (manual) thermometers yield: 19,20,22,18 (avg 19.75)
+	- perl_t.pl=23.44
+	- temper.py=23.44
+	- temper 1.0 w/o calibration = 23.44, est. error min +4.44C, avg +3.69C, max +1.44C
+	- orig temper 1.0 = 27.94 (always +4.5C = +1152 * 125.0 / 32000.0)
+
+
