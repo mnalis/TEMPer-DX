@@ -11,7 +11,7 @@ DEFS += -DDEBUG=1
 #DEFS += -DSINGLE_RUN_SHOW_C
 
 temper:	temper.c Makefile
-	${CC} -DUNIT_TEST ${DEFS} -o $@ temper.c -lusb
+	${CC} -DUNIT_TEST ${CFLAGS} ${DEFS} -o $@ temper.c -lusb
 
 clean:		
 	rm -f temper *.o
