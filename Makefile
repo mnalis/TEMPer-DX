@@ -18,3 +18,6 @@ clean:
 
 rules-install:			# must be superuser to do this
 	cp 99-tempsensor.rules /etc/udev/rules.d
+
+install-bin: temper
+	install temper /usr/local/bin
